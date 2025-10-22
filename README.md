@@ -8,8 +8,9 @@ A set of utitilies for making rocket league bots in C#
 Make sure you've installed [.NET SDK 8.0 x64](https://dotnet.microsoft.com/download),  
    
 Set up RLBotServer and RLBotGUI
-1. Set up and install RLBotServer, and the RLBotGUI from [here](https://rlbot.org/v5)
-1. Use Add -> Load folder in RLBotGUI on the current directory. This bot should appear in the list.
+1. Get the RLBot5 Launcher Installer from [here](https://github.com/RLBot/launcher/releases/tag/installer)
+1. Run RLBot5 Launcher to get latest RLBotServer and RLBotGUI 
+1. In the GUI, use Add -> Load folder in RLBotGUI on the current directory. This bot should appear in the list.
 
 ### Using Visual Studio
 1. Install Visual Studio 2019 16.8 or newer.

@@ -5,7 +5,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\RLBot\RLBot.csproj" />
+	  <PackageReference Include="RLBot.Framework" Version="3.0.0-alpha1" />
 	</ItemGroup>
 
 </Project>
