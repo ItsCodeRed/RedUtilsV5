@@ -506,10 +506,10 @@ public enum InputRestrictionMutator : byte
   Backwards = 1,
 };
 
-public enum ScoringRuleMutator : byte
+public enum ScoringRule : byte
 {
   Default = 0,
-  Disabled = 1,
+  DisableGoalScoring = 1,
 };
 
 public enum DebugRendering : byte
@@ -818,7 +818,7 @@ public enum InterfaceMessage : byte
   /// Sent by agents to state-set the game state.
   /// `enable_state_setting` must be true in the MatchConfiguration.
   DesiredGameState = 5,
-  /// Sent by agents to render lines and text in the game.
+  /// Sent by agents to render lines & text in the game.
   RenderGroup = 6,
   /// Sent by agents to remove a render group.
   RemoveRenderGroup = 7,
@@ -3201,6 +3201,46 @@ public class FloatT
   }
 }
 
+/// A boolean value located in a separate struct allowing for optional floats elsewhere.
+public struct Bool : IFlatbufferObject
+{
+  private Struct __p;
+  public ByteBuffer ByteBuffer { get { return __p.bb; } }
+  public void __init(int _i, ByteBuffer _bb) { __p = new Struct(_i, _bb); }
+  public Bool __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
+
+  public bool Val { get { return 0!=__p.bb.Get(__p.bb_pos + 0); } }
+
+  public static Offset<RLBot.Flat.Bool> CreateBool(FlatBufferBuilder builder, bool Val) {
+    builder.Prep(1, 1);
+    builder.PutBool(Val);
+    return new Offset<RLBot.Flat.Bool>(builder.Offset);
+  }
+  public BoolT UnPack() {
+    var _o = new BoolT();
+    this.UnPackTo(_o);
+    return _o;
+  }
+  public void UnPackTo(BoolT _o) {
+    _o.Val = this.Val;
+  }
+  public static Offset<RLBot.Flat.Bool> Pack(FlatBufferBuilder builder, BoolT _o) {
+    if (_o == null) return default(Offset<RLBot.Flat.Bool>);
+    return CreateBool(
+      builder,
+      _o.Val);
+  }
+}
+
+public class BoolT
+{
+  public bool Val { get; set; }
+
+  public BoolT() {
+    this.Val = false;
+  }
+}
+
 /// A 3D vector where x, y, and z can be null.
 /// Used for game state setting to define which part of a vector should change.
 /// If a component is null, then the component will keep its current value.
@@ -4704,8 +4744,8 @@ public struct MutatorSettings : IFlatbufferObject
   public RLBot.Flat.AssistGoalScoreMutator AssistGoalScore { get { int o = __p.__offset(62); return o != 0 ? (RLBot.Flat.AssistGoalScoreMutator)__p.bb.Get(o + __p.bb_pos) : RLBot.Flat.AssistGoalScoreMutator.Zero; } }
   /// Player input restriction mutator.
   public RLBot.Flat.InputRestrictionMutator InputRestriction { get { int o = __p.__offset(64); return o != 0 ? (RLBot.Flat.InputRestrictionMutator)__p.bb.Get(o + __p.bb_pos) : RLBot.Flat.InputRestrictionMutator.Default; } }
-  /// Additional rules about scoring (ball-goal interaction).
-  public RLBot.Flat.ScoringRuleMutator ScoringRule { get { int o = __p.__offset(66); return o != 0 ? (RLBot.Flat.ScoringRuleMutator)__p.bb.Get(o + __p.bb_pos) : RLBot.Flat.ScoringRuleMutator.Default; } }
+  /// Additional rules that apply to scoring goals
+  public RLBot.Flat.ScoringRule ScoringRule { get { int o = __p.__offset(66); return o != 0 ? (RLBot.Flat.ScoringRule)__p.bb.Get(o + __p.bb_pos) : RLBot.Flat.ScoringRule.Default; } }
 
   public static Offset<RLBot.Flat.MutatorSettings> CreateMutatorSettings(FlatBufferBuilder builder,
       RLBot.Flat.MatchLengthMutator match_length = RLBot.Flat.MatchLengthMutator.FiveMinutes,
@@ -4739,7 +4779,7 @@ public struct MutatorSettings : IFlatbufferObject
       RLBot.Flat.AerialGoalScoreMutator aerial_goal_score = RLBot.Flat.AerialGoalScoreMutator.One,
       RLBot.Flat.AssistGoalScoreMutator assist_goal_score = RLBot.Flat.AssistGoalScoreMutator.Zero,
       RLBot.Flat.InputRestrictionMutator input_restriction = RLBot.Flat.InputRestrictionMutator.Default,
-      RLBot.Flat.ScoringRuleMutator scoring_rule = RLBot.Flat.ScoringRuleMutator.Default) {
+      RLBot.Flat.ScoringRule scoring_rule = RLBot.Flat.ScoringRule.Default) {
     builder.StartTable(32);
     MutatorSettings.AddScoringRule(builder, scoring_rule);
     MutatorSettings.AddInputRestriction(builder, input_restriction);
@@ -4808,7 +4848,7 @@ public struct MutatorSettings : IFlatbufferObject
   public static void AddAerialGoalScore(FlatBufferBuilder builder, RLBot.Flat.AerialGoalScoreMutator aerialGoalScore) { builder.AddByte(28, (byte)aerialGoalScore, 0); }
   public static void AddAssistGoalScore(FlatBufferBuilder builder, RLBot.Flat.AssistGoalScoreMutator assistGoalScore) { builder.AddByte(29, (byte)assistGoalScore, 0); }
   public static void AddInputRestriction(FlatBufferBuilder builder, RLBot.Flat.InputRestrictionMutator inputRestriction) { builder.AddByte(30, (byte)inputRestriction, 0); }
-  public static void AddScoringRule(FlatBufferBuilder builder, RLBot.Flat.ScoringRuleMutator scoringRule) { builder.AddByte(31, (byte)scoringRule, 0); }
+  public static void AddScoringRule(FlatBufferBuilder builder, RLBot.Flat.ScoringRule scoringRule) { builder.AddByte(31, (byte)scoringRule, 0); }
   public static Offset<RLBot.Flat.MutatorSettings> EndMutatorSettings(FlatBufferBuilder builder) {
     int o = builder.EndTable();
     return new Offset<RLBot.Flat.MutatorSettings>(o);
@@ -4924,7 +4964,7 @@ public class MutatorSettingsT
   public RLBot.Flat.AerialGoalScoreMutator AerialGoalScore { get; set; }
   public RLBot.Flat.AssistGoalScoreMutator AssistGoalScore { get; set; }
   public RLBot.Flat.InputRestrictionMutator InputRestriction { get; set; }
-  public RLBot.Flat.ScoringRuleMutator ScoringRule { get; set; }
+  public RLBot.Flat.ScoringRule ScoringRule { get; set; }
 
   public MutatorSettingsT() {
     this.MatchLength = RLBot.Flat.MatchLengthMutator.FiveMinutes;
@@ -4958,7 +4998,7 @@ public class MutatorSettingsT
     this.AerialGoalScore = RLBot.Flat.AerialGoalScoreMutator.One;
     this.AssistGoalScore = RLBot.Flat.AssistGoalScoreMutator.Zero;
     this.InputRestriction = RLBot.Flat.InputRestrictionMutator.Default;
-    this.ScoringRule = RLBot.Flat.ScoringRuleMutator.Default;
+    this.ScoringRule = RLBot.Flat.ScoringRule.Default;
   }
 }
 
@@ -4999,7 +5039,7 @@ static public class MutatorSettingsVerify
       && verifier.VerifyField(tablePos, 60 /*AerialGoalScore*/, 1 /*RLBot.Flat.AerialGoalScoreMutator*/, 1, false)
       && verifier.VerifyField(tablePos, 62 /*AssistGoalScore*/, 1 /*RLBot.Flat.AssistGoalScoreMutator*/, 1, false)
       && verifier.VerifyField(tablePos, 64 /*InputRestriction*/, 1 /*RLBot.Flat.InputRestrictionMutator*/, 1, false)
-      && verifier.VerifyField(tablePos, 66 /*ScoringRule*/, 1 /*RLBot.Flat.ScoringRuleMutator*/, 1, false)
+      && verifier.VerifyField(tablePos, 66 /*ScoringRule*/, 1 /*RLBot.Flat.ScoringRule*/, 1, false)
       && verifier.VerifyTableEnd(tablePos);
   }
 }
