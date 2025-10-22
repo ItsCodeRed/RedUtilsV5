@@ -1,12 +1,12 @@
 # RedUtilities
 
-A set of utitilies for making rocket league bots in C#
+A set of utilities for making rocket league bots in C#
 
 ## Usage Instructions
 
 ### Prerequisites
-Make sure you've installed [.NET SDK 8.0 x64](https://dotnet.microsoft.com/download),  
-   
+Make sure you've installed [.NET SDK 8.0 x64](https://dotnet.microsoft.com/download).
+
 Set up RLBotServer and RLBotGUI
 1. Set up and install RLBotServer, and the RLBotGUI from [here](https://rlbot.org/v5)
 1. Use Add -> Load folder in RLBotGUI on the current directory. This bot should appear in the list.
@@ -32,10 +32,6 @@ Set up RLBotServer and RLBotGUI
 - To make your bot run as fast as possible, build it in release mode, and then change the "run_command" in `Bot.toml` to `.\\Bot\\bin\\Release\\net8.0\\Bot.exe`
 - See the [wiki](https://github.com/RLBot/RLBotCSharpExample/wiki) for tips to improve your programming experience.
 - If you'd like to keep up with bot strategies and bot tournaments, join our [Discord server](https://discord.gg/q9pbsWz). It's the heart of the RLBot community!
-
-## Things that are currently broken
-
-- Rendering doesn't work
 
 ## Credit
 
