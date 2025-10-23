@@ -26,16 +26,21 @@ namespace RedUtils
         /// <summary>Reference to the default renderer</summary>
         private readonly Renderer _renderer;
 
+        /// <summary>Used to scale 2D rendering appropriately</summary>
+        private readonly float _screenWidthScale, _screenHeightScale;
+
         /// <summary>Initialize an ExtendedRenderer using the given Renderer</summary>
-        public ExtendedRenderer(Renderer renderer)
+        public ExtendedRenderer(Renderer renderer, float screenWidth = 1f, float screenHeight = 1f)
         {
             _renderer = renderer;
+            _screenWidthScale = 1f / screenWidth;
+            _screenHeightScale = 1f / screenHeight;
         }
 
         /// <summary>Draws text in screenspace</summary>
         public void Text2D(string text, Vec3 upperLeft, float scale = 1, Color? color = null)
         {
-            _renderer.DrawText2D(text, upperLeft.x, upperLeft.y, scale, color ?? Color);
+            _renderer.DrawText2D(text, upperLeft.x * _screenWidthScale, upperLeft.y * _screenHeightScale, scale, color ?? Color);
         }
 
         /// <summary>Draws text at a point in world space</summary>
@@ -47,7 +52,7 @@ namespace RedUtils
         /// <summary>Draws a rectangle at a point in world space</summary>
         public void Rect3D(Vec3 pos, int width, int height, bool fill = true, Color? color = null)
         {
-            _renderer.DrawRect3D(NumVec(pos), width, height, color ?? Color);
+            _renderer.DrawRect3D(NumVec(pos), width * _screenWidthScale, height * _screenHeightScale, color ?? Color);
         }
 
         /// <summary>Draws a line in world space</summary>
@@ -181,12 +186,6 @@ namespace RedUtils
         private Vector3 NumVec(Vec3 v)
         {
             return new Vector3(v.x, v.y, v.z);
-        }
-        
-        /// <summary>Helper function to convert a Vec3 to a Vector2</summary>
-        private Vector2 NumVec2(Vec3 v)
-        {
-            return new Vector2(v.x, v.y);
         }
     }
 }

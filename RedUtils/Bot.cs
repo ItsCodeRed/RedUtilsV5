@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using RedUtils.Math;
 using RLBot.Flat;
 using RLBot.Manager;
 
@@ -83,7 +84,7 @@ namespace RedUtils
 		/// <param name="packet">Contains all information about the current game state</param>
 		private void GetReady(GamePacketT packet)
 		{
-			Renderer = new ExtendedRenderer(base.Renderer);
+			Renderer = new ExtendedRenderer(base.Renderer, 1920, 1080);
             if (!Game.Initialized)
             {
                 Game.Initialize();
@@ -155,6 +156,8 @@ namespace RedUtils
 			// Proccesses the packet so that data is up to date during this frame
 			Process(packet);
 
+			base.Renderer.Begin();
+			
 			// Runs our strategy code
 			Run(); 
 
@@ -175,6 +178,8 @@ namespace RedUtils
 			}
 
 			UpdateDeltaTime();
+
+			base.Renderer.End();
 
 			// returns our inputs to RLBot
 			return Controller; 
